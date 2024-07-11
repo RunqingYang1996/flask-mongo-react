@@ -1,0 +1,8 @@
+# 忽略 MacOS 系统文件
+.DS_Store
+
+# 忽略 Python 虚拟环境
+.venv/
+
+# 忽略截图
+*.png
