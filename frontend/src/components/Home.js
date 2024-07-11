@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Grid from '@mui/material/Grid';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
-import CardActionArea from '@mui/material/CardActionArea';
-import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
@@ -20,17 +15,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { Link } from 'react-router-dom';
 import BackgroundImage from './images_title/unsplash.jpg';  // 导入你的背景图片
-
-const StyledCard = styled(Card)(({ theme }) => ({
-  maxWidth: 300,
-  margin: theme.spacing(2),
-}));
-
-const StyledCardMedia = styled(CardMedia)({
-  height: 200, // 设置固定高度
-  width: '100%', // 让图片宽度填满Card
-  objectFit: 'cover', // 保持图片比例并裁剪
-});
+import './CardStyles.css'; // 导入卡片样式
 
 const GalleryHeader = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -56,9 +41,9 @@ const GalleryTitle = styled(Typography)(({ theme }) => ({
 
 const MenuButton = styled(IconButton)(({ theme }) => ({
   position: 'absolute',
-  right: theme.spacing(2),
-  top: theme.spacing(2),  // 确保按钮在顶部对齐
-  fontSize: '2rem', // 使图标变大
+  right: theme.spacing(3),
+  top: theme.spacing(3),  // 确保按钮在顶部对齐
+  fontSize: '3rem', // 使图标变大
 }));
 
 const GridContainer = styled(Grid)(({ theme }) => ({
@@ -90,6 +75,10 @@ export default function Home() {
     setDrawerOpen(open);
   };
 
+  const handleClick = () => {
+    setDrawerOpen(true);
+  };
+
   const list = (
     <List>
       {options.map((option) => (
@@ -105,8 +94,8 @@ export default function Home() {
     <div>
       <GalleryHeader>
         <GalleryTitle variant="h2">Gallery</GalleryTitle>
-        <MenuButton color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
-          <MenuIcon />
+        <MenuButton color="inherit" aria-label="menu" onClick={handleClick}>
+          <MenuIcon fontSize="inherit" /> {/* 修改这里才能调整icon大小 */}
         </MenuButton>
         <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
           {list}
@@ -115,25 +104,19 @@ export default function Home() {
       <GridContainer container justifyContent="center" spacing={4}>
         {images.map((item, index) => (
           <Grid item key={index}>
-            <Tooltip title={`Author: ${item.author}`}>
-              <StyledCard>
-                <CardActionArea>
-                  <StyledCardMedia
-                    component="img"
-                    image={`data:image/png;base64,${item.img}`}
-                    alt={item.title}
-                  />
-                  <CardContent>
-                    <Typography variant="h5" component="div">
-                      {item.title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      by: {item.author}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-              </StyledCard>
-            </Tooltip>
+            <div className="card-container">
+              <div className="card">
+                <div className="front" style={{ backgroundImage: `url(data:image/png;base64,${item.img})` }}>
+                  <div className="card-content">
+                    {/* 此处可以添加前面卡片内容 */}
+                  </div>
+                </div>
+                <div className="back">
+                  <h1>{item.title}</h1>
+                  <p>Additional info on the back of the card</p>
+                </div>
+              </div>
+            </div>
           </Grid>
         ))}
       </GridContainer>
