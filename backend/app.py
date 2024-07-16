@@ -143,10 +143,8 @@ def list_all_projects_by_author(authorname):
     return jsonify({"projects": list(projects)}), 200
 
 @app.route('/api/images', methods=['GET'])
-
 def get_images():
     client = pymongo.MongoClient(MONGO_URL)
-    # 获取所有数据库名称
     db_names = client.list_database_names()
     all_images = []
     try:
@@ -159,13 +157,49 @@ def get_images():
                     all_images.append({
                         'img': picture['data'],
                         'title': picture.get('picture_name'),
-                        'author': picture.get('author')
+                        'author': picture.get('author'),
+                        'databasename': db_name  # Include database name
                     })
     except Exception as e:
         print(f"Error retrieving images: {e}")
     
     return jsonify(all_images)
 
+@app.route('/api/delete/database/<dbname>', methods=['DELETE'])
+def delete_database(dbname):
+    try:
+        client = pymongo.MongoClient(MONGO_URL)
+        client.drop_database(dbname)
+        return jsonify({"message": f"Database {dbname} deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+#%%%%%%%%%%%%%%%%%%%%%Testneeddelete#####################
+users = {
+    "therajanmaurya": {
+        "name": "Rajan Maurya",
+        "username": "therajanmaurya",
+        "office": "Head Office",
+        "status": "Authenticated",
+        "language": "English",
+        "email": "rajanmaurya154@gmail.com",
+        "role": "Super user",
+        "roleDescription": "This role provides all application permissions."
+    }
+    # 你可以添加更多的用户数据
+}
+
+@app.route('/api/getuserprofile/<username>', methods=['GET'])
+def get_user_profile(username):
+    user = users.get(username)
+    if user:
+        return jsonify(user), 200
+    else:
+        return jsonify({"error": "User not found"}), 404
+#####################################################################
 if __name__ == "__main__":
     app.run(debug=True)
 
