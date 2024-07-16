@@ -87,7 +87,7 @@ export default function UserProfile() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const username = 'therajanmaurya'; // 直接设定用户名
+  const username = 'runqingyang'; // 直接设定用户名
 
   useEffect(() => {
     fetchUserProfile();

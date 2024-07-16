@@ -51,11 +51,21 @@ const GridContainer = styled(Grid)(({ theme }) => ({
   marginTop: theme.spacing(4),  // 与上方图片保持一定距离
 }));
 
-const StyledButton = styled(Button)(({ theme }) => ({
+const StyledButton = styled(Button)(({ theme, active }) => ({
   textTransform: 'none', // 禁止文本全部大写
   padding: theme.spacing(1, 2), // 调整按钮的内边距，使按钮变短
   fontSize: '1rem', // 增大字体
   margin: theme.spacing(1), // 按钮之间的间距
+  borderRadius: '12px', // 圆滑边角
+  backgroundColor: active ? theme.palette.primary.main : 'white',
+  color: active ? theme.palette.primary.contrastText : theme.palette.primary.main,
+  border: `2px solid ${theme.palette.primary.main}`,
+  boxShadow: 'none', // 去除阴影效果
+  '&:hover': {
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText,
+    boxShadow: 'none', // 确保悬停时也没有阴影效果
+  },
 }));
 
 const options = [
@@ -68,6 +78,7 @@ const options = [
 export default function Home() {
   const [images, setImages] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [activeButton, setActiveButton] = useState('');
 
   useEffect(() => {
     fetchImages('');
@@ -93,6 +104,7 @@ export default function Home() {
   };
 
   const handleButtonClick = (type) => () => {
+    setActiveButton(type);
     fetchImages(type);
   };
 
@@ -120,13 +132,40 @@ export default function Home() {
       </GalleryHeader>
       <Grid container justifyContent="center" spacing={2} style={{ marginTop: 16 }}>
         <Grid item>
-          <StyledButton variant="contained" onClick={handleButtonClick('Blender_Geometry')}>Blender Geometry</StyledButton>
+          <StyledButton
+            variant="contained"
+            active={activeButton === ''}
+            onClick={handleButtonClick('')}
+          >
+            All
+          </StyledButton>
         </Grid>
         <Grid item>
-          <StyledButton variant="contained" onClick={handleButtonClick('Blender_Shader')}>Blender Shader</StyledButton>
+          <StyledButton
+            variant="contained"
+            active={activeButton === 'Blender_Geometry'}
+            onClick={handleButtonClick('Blender_Geometry')}
+          >
+            Blender Geometry
+          </StyledButton>
         </Grid>
         <Grid item>
-          <StyledButton variant="contained" onClick={handleButtonClick('Unity_Shader')}>Unity Shader</StyledButton>
+          <StyledButton
+            variant="contained"
+            active={activeButton === 'Blender_Shader'}
+            onClick={handleButtonClick('Blender_Shader')}
+          >
+            Blender Shader
+          </StyledButton>
+        </Grid>
+        <Grid item>
+          <StyledButton
+            variant="contained"
+            active={activeButton === 'Unity_Shader'}
+            onClick={handleButtonClick('Unity_Shader')}
+          >
+            Unity Shader
+          </StyledButton>
         </Grid>
       </Grid>
       <GridContainer container justifyContent="center" spacing={4}>
