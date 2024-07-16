@@ -165,6 +165,50 @@ def get_images():
     
     return jsonify(all_images)
 
+def get_images_by_category(category):
+    client = pymongo.MongoClient(MONGO_URL)
+    db_names = client.list_database_names()
+    filtered_images = []
+    try:
+        for db_name in db_names:
+            db = client[db_name]
+            if 'pictures' in db.list_collection_names():
+                pictures_collection = db.pictures
+                pictures = pictures_collection.find({"category": category})
+                for picture in pictures:
+                    filtered_images.append({
+                        'img': picture['data'],
+                        'title': picture.get('picture_name'),
+                        'author': picture.get('author'),
+                        'databasename': db_name  # Include database name
+                    })
+    except Exception as e:
+        print(f"Error retrieving images: {e}")
+    
+    return filtered_images
+
+@app.route('/api/images/Blender_Shader', methods=['GET'])
+def get_blender_shader_images():
+    category = "Blender/Shader"
+    images = get_images_by_category(category)
+    return jsonify(images)
+
+@app.route('/api/images/Blender_Geometry', methods=['GET'])
+def get_blender_geo_images():
+    category = "Blender/Geo"
+    images = get_images_by_category(category)
+    return jsonify(images)
+
+@app.route('/api/images/Unity_Shader', methods=['GET'])
+def get_unity_shader_images():
+    category = "Unity/Shader"
+    images = get_images_by_category(category)
+    return jsonify(images)
+
+
+
+
+
 @app.route('/api/delete/database/<dbname>', methods=['DELETE'])
 def delete_database(dbname):
     try:

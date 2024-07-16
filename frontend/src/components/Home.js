@@ -14,6 +14,7 @@ import WorkIcon from '@mui/icons-material/Work';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { Link } from 'react-router-dom';
+import Button from '@mui/material/Button';
 import BackgroundImage from './images_title/unsplash.jpg';  // 导入你的背景图片
 import './CardStyles.css'; // 导入卡片样式
 
@@ -50,6 +51,13 @@ const GridContainer = styled(Grid)(({ theme }) => ({
   marginTop: theme.spacing(4),  // 与上方图片保持一定距离
 }));
 
+const StyledButton = styled(Button)(({ theme }) => ({
+  textTransform: 'none', // 禁止文本全部大写
+  padding: theme.spacing(1, 2), // 调整按钮的内边距，使按钮变短
+  fontSize: '1rem', // 增大字体
+  margin: theme.spacing(1), // 按钮之间的间距
+}));
+
 const options = [
   { label: 'Home', icon: <HomeIcon />, path: '/' },
   { label: 'My Workspace', icon: <WorkIcon />, path: '/myworkspace' },
@@ -62,11 +70,16 @@ export default function Home() {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/api/images')  // 确保URL指向Flask服务器
+    fetchImages('');
+  }, []);
+
+  const fetchImages = (type) => {
+    const url = type ? `http://127.0.0.1:5000/api/images/${type}` : 'http://127.0.0.1:5000/api/images';
+    fetch(url)
       .then(response => response.json())
       .then(data => setImages(data))
       .catch(error => console.error('Error fetching images:', error));
-  }, []);
+  };
 
   const toggleDrawer = (open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -77,6 +90,10 @@ export default function Home() {
 
   const handleClick = () => {
     setDrawerOpen(true);
+  };
+
+  const handleButtonClick = (type) => () => {
+    fetchImages(type);
   };
 
   const list = (
@@ -101,6 +118,17 @@ export default function Home() {
           {list}
         </Drawer>
       </GalleryHeader>
+      <Grid container justifyContent="center" spacing={2} style={{ marginTop: 16 }}>
+        <Grid item>
+          <StyledButton variant="contained" onClick={handleButtonClick('Blender_Geometry')}>Blender Geometry</StyledButton>
+        </Grid>
+        <Grid item>
+          <StyledButton variant="contained" onClick={handleButtonClick('Blender_Shader')}>Blender Shader</StyledButton>
+        </Grid>
+        <Grid item>
+          <StyledButton variant="contained" onClick={handleButtonClick('Unity_Shader')}>Unity Shader</StyledButton>
+        </Grid>
+      </Grid>
       <GridContainer container justifyContent="center" spacing={4}>
         {images.map((item, index) => (
           <Grid item key={index}>
